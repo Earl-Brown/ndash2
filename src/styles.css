@@ -1,0 +1,15 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.percent-meter {
+  font-size: 9px;
+  font-weight: bold;
+  position: relative;
+}
+
+.meter-box {
+  border: 1px solid silver;
+  padding: 0.05em;
+}
