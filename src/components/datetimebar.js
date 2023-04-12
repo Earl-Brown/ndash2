@@ -22,7 +22,6 @@ const DateTimeBar = ({
 
 	const formattedDate = now.format(dateFormat).raw
 	const formattedTime = now.format(timeFormat).raw
-	console.log("formatted:", formattedDate)
 
 	return (
 		<div style={{ display: "block", ...barStyle }}>

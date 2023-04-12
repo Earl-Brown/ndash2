@@ -27,6 +27,7 @@ function createWindow() {
     : "http://localhost:3000";
   mainWindow.loadURL(appURL);
 
+  mainWindow.webContents.send("is there anybody out there?")
   // Automatically open Chrome's DevTools in development mode.
   if (!app.isPackaged) {
     mainWindow.webContents.openDevTools();
