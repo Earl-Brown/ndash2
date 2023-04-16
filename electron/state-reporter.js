@@ -2,7 +2,7 @@ import {Comms} from './comms'
 import {topics} from '../common/topics'
 
 const startReportingCpuState = (frequency) => {
-
+// Comms.
 }
 
 const startReportingMemoryState = (frequency) => {
