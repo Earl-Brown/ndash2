@@ -1,6 +1,7 @@
 import CpuMeterCollection from "./components/cpu-meters"
 import MemoryBar from "./components/memory-bar"
 import DateTimeBar from "./components/datetimebar"
+import Comms from './services/comms-service'
 
 import "./styles.css"
 

@@ -1,8 +1,5 @@
 import { useInterval } from "react-use"
 
-const ipcRenderer = window.require("electron")
-
-
 const cpuInfoDefaults = {
 	cores: [],
 	temp: 100,

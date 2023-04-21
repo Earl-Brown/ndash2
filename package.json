@@ -1,7 +1,7 @@
 {
   "name": "ndash2",
   "version": "0.1.0",
-  "main": "./electron/main.js",
+  "main": "./electron/esm-it.js",
   "author": "ndash@theGleep.com",
   "description": "A system monitoring tool",
   "homepage": "./",
@@ -14,6 +14,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "esm": "^3.2.25",
     "loader-utils": "3.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -26,10 +27,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron:start": "yarn concurrently -k \"cross-env BROWSER=none yarn start\" \"yarn wait-on http://127.0.0.1:3000 && yarn electronmon ./electron/main.js\"",
-    "electron:package:mac": "yarn build && electron-builder -m -c.extraMetadata.main=build/electron.js",
-    "electron:package:win": "yarn build && electron-builder -w -c.extraMetadata.main=build/electron.js",
-    "electron:package:linux": "yarn build && electron-builder -l -c.extraMetadata.main=build/electron.js"
+    "electron:start": "yarn concurrently -k \"cross-env BROWSER=none yarn start\" \"yarn wait-on http://127.0.0.1:3000 && yarn electronmon ./electron/esm-it.js\"",
+    "electron:package:mac": "yarn build && electron-builder -m -c.extraMetadata.main=build/esm-it.js",
+    "electron:package:win": "yarn build && electron-builder -w -c.extraMetadata.main=build/esm-it.js",
+    "electron:package:linux": "yarn build && electron-builder -l -c.extraMetadata.main=build/esm-it.js"
   },
   "build": {
     "appId": "com.theGleep.ndash2",

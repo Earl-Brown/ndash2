@@ -1,7 +1,15 @@
 // Module to control the application lifecycle and the native browser window.
-const { app, BrowserWindow, protocol } = require("electron");
+const { app, BrowserWindow, protocol, ipcMain } = require("electron");
 const path = require("path");
 const url = require("url");
+const { default: initializeServices } = require("./services.js");
+
+ipcMain.on("startedup", ({sender}, arg) => {
+  console.log("started up")
+
+  sender.send('hello', 'started up!')
+})
+
 
 // Create the native browser window.
 function createWindow() {
@@ -28,6 +36,7 @@ function createWindow() {
   mainWindow.loadURL(appURL);
 
   mainWindow.webContents.send("hello", "is there anybody out there?")
+
   // Automatically open Chrome's DevTools in development mode.
   if (!app.isPackaged) {
     mainWindow.webContents.openDevTools();
@@ -55,6 +64,8 @@ function setupLocalFilesNormalizerProxy() {
 app.whenReady().then(() => {
   createWindow();
   setupLocalFilesNormalizerProxy();
+  
+  initializeServices();
 
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
