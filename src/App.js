@@ -1,7 +1,6 @@
 import CpuMeterCollection from "./components/cpu-meters"
 import MemoryBar from "./components/memory-bar"
 import DateTimeBar from "./components/datetimebar"
-import Comms from './services/comms-service'
 
 import "./styles.css"
 
@@ -32,7 +31,7 @@ export default function App() {
 			></DateTimeBar>
 			<CpuMeterCollection
 				style={{ width: "90%", textAlign: "center" }}
-				refreshRate={2000}
+				secondsBetweenUpdates={2}
 			/>
 			<MemoryBar
 				style={{

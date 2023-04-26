@@ -41,6 +41,7 @@ function createWindow() {
   if (!app.isPackaged) {
     mainWindow.webContents.openDevTools();
   }
+  return mainWindow
 }
 
 // Setup a local proxy to adjust the paths of requested files when loading
@@ -62,10 +63,12 @@ function setupLocalFilesNormalizerProxy() {
 // is ready to create the browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  createWindow();
+  const window = createWindow();
   setupLocalFilesNormalizerProxy();
   
-  initializeServices();
+  console.log("initializing services")
+  
+  initializeServices(window);
 
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the

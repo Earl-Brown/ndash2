@@ -4,13 +4,21 @@ const  electron = require("electron");
 const {contextBridge: {exposeInMainWorld}, ipcRenderer } = electron
 
 const server = {
-  startReportingCPU: (callback, frequencyInSeconds) => {
-    ipcRenderer.on("cpu-report", callback)
-    ipcRenderer.send("startReportingCPU", {frequencyInSeconds: frequencyInSeconds})
+  CPU: {
+    startReporting: (secondsBetweenUpdates, callback) => {
+      ipcRenderer.on("cpu-report", callback)
+      ipcRenderer.send("startReportingCPU", {secondsBetweenUpdates: secondsBetweenUpdates})
+    },
+    stopReporting: () => ipcRenderer.send("stopReportingCPU")
   },
-  startReportingMemory: (callback, frequencyInSeconds) => {
-    ipcRenderer.on("memory-report", callback)
-    ipcRenderer.send("startReportingMemory", {frequencyInSeconds: frequencyInSeconds})
+  Memory: {
+    startReporting: (secondsBetweenUpdates, callback) => {
+      ipcRenderer.on("memory-report", callback)
+      ipcRenderer.send("startReportingMemory", {secondsBetweenUpdates: secondsBetweenUpdates})
+    },
+    stopReporting: () => {
+      ipcRenderer.send("stopReportingMemory")
+    }
   },
 }
 

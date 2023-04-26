@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react"
 import { useInterval } from "react-use"
 
 const cpuInfoDefaults = {
@@ -9,23 +10,31 @@ const cpuInfoDefaults = {
 
 const { minTemp, maxTemp } = cpuInfoDefaults
 const tempRange = maxTemp - minTemp
+const {CPU} = window.server
 
-const useCpuActivity = (callback, refreshRate = 1000) => {
-	useInterval(() => {
-		const cores = Array(16)
-			.fill(0)
-			.map(() => {
-				const core = {
-					percent: Math.random() * 99 + 1
-				}
-				return core
-			})
-		const temp = ((Math.random() * 100) % tempRange) + cpuInfoDefaults.minTemp
-		callback({ cores: cores, temp: Math.trunc(temp) })
-	}, refreshRate)
+const stopReporting = CPU.stopReporting
+
+const startReporting = (callback, frequency = 2) => {
+		CPU.startReporting(frequency, (evt,payload) => {
+			console.log("CPU report", new Date().getSeconds(), payload)
+			callback(payload)
+		})
+		return stopReporting;
 }
 
-const useMemory = (callback, refreshRate = 1000) => {
+const getSnapshot = () => ({cores: [], temp: 0})
+
+const useCpuActivity = (secondsBetweenUpdates = 1) => {
+  const [cpuInfo, updateCpuInfo] = useState({cores: [], temp: 0})
+
+  useEffect(() => {
+    return startReporting(updateCpuInfo, secondsBetweenUpdates);
+  });
+
+  return cpuInfo;
+}
+
+const useMemory = (callback, secondsBetweenUpdates = 1000) => {
 	useInterval(() => {
 		const total = 64,
 			used = Math.random() * total,
@@ -37,7 +46,7 @@ const useMemory = (callback, refreshRate = 1000) => {
 			}
 
 		callback(memory)
-	}, refreshRate)
+	}, secondsBetweenUpdates)
 }
 
 const obj = {

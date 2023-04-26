@@ -11,9 +11,9 @@ const percentageToHsl = (percentage, hue0, hue1) => {
 const { minTemp, maxTemp } = cpuInfoDefaults,
 	tempRange = maxTemp - minTemp
 
-const CpuMeterCollection = ({ refreshRate, style = {} }) => {
-	const [{ cores, temp } = cpuInfoDefaults, updateCpuInfo] = useState({})
-	useCpuActivity(updateCpuInfo, refreshRate)
+const CpuMeterCollection = ({ secondsBetweenUpdates, style = {} }) => {
+	const { cores, temp } = useCpuActivity(secondsBetweenUpdates)
+	console.log("cpumetercollection starting up", new Date().getSeconds())
 
 	const tempBase = maxTemp - temp,
 		percent = tempBase / tempRange,

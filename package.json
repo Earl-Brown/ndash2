@@ -1,14 +1,14 @@
 {
   "name": "ndash2",
   "version": "0.1.0",
-  "main": "./electron/esm-it.js",
+  "main": "./electron/esm-wrapper.js",
   "author": "ndash@theGleep.com",
   "description": "A system monitoring tool",
   "homepage": "./",
   "private": true,
   "appConfiguration": {
-    "cpuReportingFrequency": 0.5,
-    "memoryReportingFrequecy": 0.5
+    "cpuReportingFrequency": 2,
+    "memoryReportingFrequecy": 2
   },
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
@@ -27,10 +27,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron:start": "yarn concurrently -k \"cross-env BROWSER=none yarn start\" \"yarn wait-on http://127.0.0.1:3000 && yarn electronmon ./electron/esm-it.js\"",
-    "electron:package:mac": "yarn build && electron-builder -m -c.extraMetadata.main=build/esm-it.js",
-    "electron:package:win": "yarn build && electron-builder -w -c.extraMetadata.main=build/esm-it.js",
-    "electron:package:linux": "yarn build && electron-builder -l -c.extraMetadata.main=build/esm-it.js"
+    "electron:start": "yarn concurrently -k \"cross-env BROWSER=none yarn start\" \"yarn wait-on http://127.0.0.1:3000 && yarn electronmon ./electron/esm-wrapper.js\"",
+    "electron:package:mac": "yarn build && electron-builder -m -c.extraMetadata.main=build/esm-wrapper.js",
+    "electron:package:win": "yarn build && electron-builder -w -c.extraMetadata.main=build/esm-wrapper.js",
+    "electron:package:linux": "yarn build && electron-builder -l -c.extraMetadata.main=build/esm-wrapper.js"
   },
   "build": {
     "appId": "com.theGleep.ndash2",
