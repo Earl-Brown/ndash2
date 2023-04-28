@@ -1,12 +1,11 @@
+import si from "systeminformation"
+
 const cpuInfoDefaults = {
 	cores: [],
 	temp: 100,
 	minTemp: 135,
 	maxTemp: 180
 }
-
-const { minTemp, maxTemp } = cpuInfoDefaults
-const tempRange = maxTemp - minTemp
 
 var cpuStateReporter = undefined,
 	memoryStateReporter = undefined
@@ -15,19 +14,16 @@ const startReportingCpuState = (window, secondsBetweenUpdates) => {
 	const delay = secondsBetweenUpdates * 1000
 	console.log(`Starting CPU reporting; every ${delay} miliseconds (frequency = '${secondsBetweenUpdates}')`)
 
-	cpuStateReporter = setInterval(() => {
-		const cores = Array(16)
-			.fill(0)
-			.map(() => {
-				const core = {
-					percent: Math.random() * 99 + 1
-				}
-				return core
-			})
-		const temp = ((Math.random() * 100) % tempRange) + cpuInfoDefaults.minTemp
-		const state = { cores: cores, temp: Math.trunc(temp) }
+	cpuStateReporter = setInterval(async () => {
+    const [load, temp] = await Promise.all([si.currentLoad(), si.cpuTemperature()])
 
-		console.log(`reporting CPU state`, state, new Date().getSeconds())
+    const cpus = load.cpus,
+      totalLoad = cpus.reduce((sum, cpu) => sum + cpu.load, 0),
+      avgLoad = totalLoad / cpus.length
+
+		const state = { loadInfo: {average: avgLoad, cores: cpus}, cores: cpus, temp: Math.trunc(temp.main) }
+
+    console.log(`Reporting cpu state`, temp.main, temp)
 		window.webContents.send("cpu-report", state)
 	}, delay)
 }

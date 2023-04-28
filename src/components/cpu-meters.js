@@ -1,5 +1,4 @@
 import PercentMeter from "./percent-meter"
-import { useState } from "react"
 import { useCpuActivity, cpuInfoDefaults } from "../services/hardwareservice"
 import { VerticalMeter } from "./vertical-meter"
 
@@ -8,16 +7,21 @@ const percentageToHsl = (percentage, hue0, hue1) => {
 	return `hsl(${hue}, 100%, 40%)`
 }
 
+const nineFifths = 9/5
+
 const { minTemp, maxTemp } = cpuInfoDefaults,
 	tempRange = maxTemp - minTemp
 
 const CpuMeterCollection = ({ secondsBetweenUpdates, style = {} }) => {
-	const { cores, temp } = useCpuActivity(secondsBetweenUpdates)
-	console.log("cpumetercollection starting up", new Date().getSeconds())
+	const { loadInfo, temp } = useCpuActivity(secondsBetweenUpdates),
+    {average: averageLoad, cores} = loadInfo,
+    farenheit = (temp * nineFifths) + 32
 
-	const tempBase = maxTemp - temp,
-		percent = tempBase / tempRange,
-		color = percentageToHsl(percent, 113, 0)
+  console.log(`temp`, farenheit)
+
+	const tempBase = maxTemp - farenheit,
+		tempPercent = tempBase / tempRange,
+		color = percentageToHsl(tempPercent, 113, 0)
 
 	return (
 		<div style={{ position: "relative", height: "auto", width: "100%" }}>
@@ -31,14 +35,15 @@ const CpuMeterCollection = ({ secondsBetweenUpdates, style = {} }) => {
 					right: "0px"
 				}}
 				color={color}
-				percent={80}
+				percent={averageLoad}
+        title={`${farenheit} (${temp}c)`}
 			/>
 
 			<div style={{ ...style }}>
 				{(cores ?? []).map((core, idx) => (
 					<PercentMeter
 						key={idx}
-						percent={core.percent}
+						percent={core.load}
 						fillColor="#00C800"
 						meterStyle={{ borderRight: `4px solid ${color}` }}
 					/>

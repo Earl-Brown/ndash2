@@ -25,7 +25,7 @@ const startReporting = (callback, frequency = 2) => {
 const getSnapshot = () => ({cores: [], temp: 0})
 
 const useCpuActivity = (secondsBetweenUpdates = 1) => {
-  const [cpuInfo, updateCpuInfo] = useState({cores: [], temp: 0})
+  const [cpuInfo, updateCpuInfo] = useState({loadInfo: {average: 0, cores: []}, temp: 0})
 
   useEffect(() => {
     return startReporting(updateCpuInfo, secondsBetweenUpdates);
