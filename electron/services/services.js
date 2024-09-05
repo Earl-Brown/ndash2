@@ -1,5 +1,5 @@
 import { startReportingCpuState, stopReportingCPUState, startReportingMemoryState, stopReportingMemoryState } from "./state-reporter"
-import { appConfiguration } from '../package.json'
+import { appConfiguration } from '../../package.json'
 import { ipcMain } from "electron"
 
 console.log("appConfiguration", appConfiguration)

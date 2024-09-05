@@ -29,7 +29,7 @@ const useCpuActivity = (secondsBetweenUpdates = 1) => {
 
   useEffect(() => {
     return startReporting(updateCpuInfo, secondsBetweenUpdates);
-  });
+  }, [cpuInfo, secondsBetweenUpdates]);
 
   return cpuInfo;
 }

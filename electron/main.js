@@ -2,7 +2,7 @@
 const { app, BrowserWindow, protocol, ipcMain } = require("electron");
 const path = require("path");
 const url = require("url");
-const { default: initializeServices } = require("./services.js");
+const { default: initializeServices } = require("./services/services.js");
 
 ipcMain.on("startedup", ({sender}, arg) => {
   console.log("started up")
@@ -65,9 +65,9 @@ function setupLocalFilesNormalizerProxy() {
 app.whenReady().then(() => {
   const window = createWindow();
   setupLocalFilesNormalizerProxy();
-  
+
   console.log("initializing services")
-  
+
   initializeServices(window);
 
   app.on("activate", function () {
