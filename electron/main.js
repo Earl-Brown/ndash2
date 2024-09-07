@@ -2,6 +2,7 @@
 const { app, BrowserWindow, protocol, ipcMain } = require("electron");
 const path = require("path");
 const url = require("url");
+const fs = require("fs");
 const { default: initializeServices } = require("./services/services.js");
 
 ipcMain.on("startedup", ({sender}, arg) => {
@@ -10,38 +11,72 @@ ipcMain.on("startedup", ({sender}, arg) => {
   sender.send('hello', 'started up!')
 })
 
-
-// Create the native browser window.
-function createWindow() {
-  const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+const createWindow = ({width, height, webPreferences, url, showDebugTools}) => {
+  const window = new BrowserWindow({
+    width: width,
+    height: height,
     // Set the path of an additional "preload" script that can be used to
     // communicate between node-land and browser-land.
-    webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
-    },
+    webPreferences: webPreferences,
   });
 
-  // In production, set the initial browser path to the local bundle generated
-  // by the Create React App build process.
-  // In development, set it to localhost to allow live/hot-reloading.
+  window.loadURL(url);
+
+  // Automatically open Chrome's DevTools in development mode.
+  if (showDebugTools) {
+    window.webContents.openDevTools();
+  }
+  return window
+
+}
+// Create the native browser window.
+function createMainWindow() {
+
+  const defaultConfig = {height: 600, width: 800, showDebugTools: !app.isPackaged}
+
+  // read config file
+  const configPath = path.join(__dirname, "config.json")
+  const loadedConfig = fs.existsSync(configPath) ? JSON.parse(fs.readFileSync(configPath)) : {}
+
+  const config = {
+    ...defaultConfig,
+    ...loadedConfig,
+  }
+
+  const webPreferences = {
+    preload: path.join(__dirname, "preload.js"),
+    height: config.height,
+    width: config.width,
+  }
+
   const appURL = app.isPackaged
     ? url.format({
         pathname: path.join(__dirname, "index.html"),
         protocol: "file:",
         slashes: true,
       })
-    : "http://localhost:3000";
-  mainWindow.loadURL(appURL);
+    : "http://localhost:3000"
 
-  mainWindow.webContents.send("hello", "is there anybody out there?")
+  const window = createWindow({
+    ...config,
+    webPreferences: webPreferences,
+    url: appURL
+  });
 
-  // Automatically open Chrome's DevTools in development mode.
-  if (!app.isPackaged) {
-    mainWindow.webContents.openDevTools();
-  }
-  return mainWindow
+  window.on('resize', () => {
+    const {width, height} = window.getBounds()
+    console.log("resize", width, height)
+
+    // save height to a config file
+    const config = {
+      height: height,
+      width: width,
+    }
+
+    fs.writeFileSync(path.join(__dirname, "config.json"), JSON.stringify(config))
+  })
+
+  return window
 }
 
 // Setup a local proxy to adjust the paths of requested files when loading
@@ -63,7 +98,7 @@ function setupLocalFilesNormalizerProxy() {
 // is ready to create the browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  const window = createWindow();
+  const window = createMainWindow();
   setupLocalFilesNormalizerProxy();
 
   console.log("initializing services")
@@ -74,7 +109,7 @@ app.whenReady().then(() => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
+      createMainWindow();
     }
   });
 });
