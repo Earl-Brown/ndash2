@@ -14,7 +14,7 @@ const {CPU} = window.server
 
 const stopReporting = CPU.stopReporting
 
-const startReporting = (callback, frequency = 2) => {
+const startReporting = (callback, frequency = 0.75) => {
 		CPU.startReporting(frequency, (evt,payload) => {
 			console.log("CPU report", new Date().getSeconds(), payload)
 			callback(payload)

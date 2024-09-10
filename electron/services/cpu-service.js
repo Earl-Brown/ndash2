@@ -51,6 +51,6 @@ const reporter = {
 	stopReportingMemoryState: stopReportingMemoryState
 }
 
-export { startReportingCpuState, stopReportingCPUState, startReportingMemoryState, stopReportingMemoryState }
+export {startReportingCpuState, stopReportingCPUState, startReportingMemoryState, stopReportingMemoryState }
 
 export default reporter

@@ -31,7 +31,7 @@ export default function App() {
 			></DateTimeBar>
 			<CpuMeterCollection
 				style={{ width: "90%", textAlign: "center" }}
-				secondsBetweenUpdates={2}
+				secondsBetweenUpdates={0.75}
 			/>
 			<MemoryBar
 				style={{

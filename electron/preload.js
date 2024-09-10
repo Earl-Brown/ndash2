@@ -9,7 +9,7 @@ const server = {
       ipcRenderer.on("cpu-report", callback)
       ipcRenderer.send("startReportingCPU", {secondsBetweenUpdates: secondsBetweenUpdates})
     },
-    stopReporting: () => ipcRenderer.send("stopReportingCPU")
+    stopReporting: () => ipcRenderer.send("stopReportingCPU"),
   },
   Memory: {
     startReporting: (secondsBetweenUpdates, callback) => {
@@ -22,8 +22,8 @@ const server = {
   },
 }
 
-// As an example, here we use the exposeInMainWorld API to expose the browsers 
-// and node versions to the main window. 
+// As an example, here we use the exposeInMainWorld API to expose the browsers
+// and node versions to the main window.
 // They'll be accessible at "window.versions".
 process.once('loaded', () => {
   exposeInMainWorld("server", server)
@@ -39,10 +39,10 @@ process.once('loaded', () => {
 // process.once("loaded", () => {
 //   contextBridge.exposeInMainWorld("versions", process.versions);
 //   contextBridge.exposeInMainWorld("Comms", {
-//     ipcRenderer, 
-//     ipcMain, 
-//     on: ipcRenderer.on, 
-//     send: ipcRenderer.send, 
+//     ipcRenderer,
+//     ipcMain,
+//     on: ipcRenderer.on,
+//     send: ipcRenderer.send,
 //     sendAsync: ipcRenderer.sendAsync
 //   });
 // });

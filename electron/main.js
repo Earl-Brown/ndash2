@@ -11,6 +11,16 @@ ipcMain.on("startedup", ({sender}, arg) => {
   sender.send('hello', 'started up!')
 })
 
+
+// todo: create windows as an array
+//  update the config file with the window sizes
+// Precheck for CPU count
+// hide temp if not accurate (above mi)
+// no title bar
+// no menu bar
+// allow moving by dragging the window
+// remember window position
+
 const createWindow = ({width, height, webPreferences, url, showDebugTools}) => {
   const window = new BrowserWindow({
     width: width,
