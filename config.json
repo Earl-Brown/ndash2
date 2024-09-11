@@ -1,0 +1,13 @@
+{
+  "windows": {
+    "main": {
+      "x": 584,
+      "y": 525,
+      "width": 139,
+      "height": 327,
+      "titleBarStyle": "hidden",
+      "showDebugTools": true,
+      "url": "http://localhost:3000"
+    }
+  }
+}

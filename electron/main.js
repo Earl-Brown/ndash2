@@ -11,10 +11,9 @@ ipcMain.on("startedup", ({ sender }, arg) => {
   sender.send('hello', 'started up!')
 })
 
-const saveWindowMetrics = (window, configKey) => {
-  const metrics = window.getBounds()
-  console.log("saving metrics", metrics)
-  updateConfig({ windows: { [configKey]: metrics } })
+const saveWindowConfig = (config, configKey) => {
+  console.log(`saving window config for ${configKey}`, config)
+  updateConfig({ windows: { [configKey]: config } })
 }
 
 // todo: create windows as an array
@@ -25,14 +24,15 @@ const saveWindowMetrics = (window, configKey) => {
 // allow moving by dragging the window
 // remember window position
 
-const createWindow = ({ width, height, webPreferences, url, showDebugTools }) => {
-  const window = new BrowserWindow({
-    width: width,
-    height: height,
-    // Set the path of an additional "preload" script that can be used to
-    // communicate between node-land and browser-land.
-    webPreferences: webPreferences,
-  });
+const createWindow = (configuration) => {
+  const {url, showDebugTools} = configuration
+
+//  titleBarStyle: "hidden",
+
+  const windowConfig = { url, ...configuration }
+  console.log("creating window", windowConfig)
+
+  const window = new BrowserWindow(windowConfig);
 
   window.loadURL(url);
 
@@ -50,13 +50,18 @@ function createMainWindow(config) {
     ...config
   });
 
-  window.on('resize', (...args) => {
-    saveWindowMetrics(window, "main")
-  })
+  const saveMetrics = () => {
+    const configToSave = {...config}
+    if (configToSave.webPreferences) {
+      delete configToSave.webPreferences
+    }
 
-  window.on("moved", (...args) => {
-    saveWindowMetrics(window, "main")
-  })
+    saveWindowConfig({...configToSave, ...window.getBounds()}, "main")
+  }
+
+  window.on('resize', saveMetrics)
+
+  window.on("moved", saveMetrics)
 
   return window
 }

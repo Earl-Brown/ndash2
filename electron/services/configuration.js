@@ -1,6 +1,6 @@
 import path from "path"
 import fs from "fs"
-
+import { app } from "electron"
 
 const defaultWindowConfig = {
   height: 600, width: 800,
@@ -23,7 +23,7 @@ const defaultConfig = {
   }
 }
 
-const configPath = path.join(__dirname, "config.json")
+const configPath = path.join(app.getAppPath(), "config.json")
 
 const configuration = new class {
   constructor() {
@@ -33,17 +33,14 @@ const configuration = new class {
   readConfig() {
     if (this.configuration === null) {
       // read config file
-      const loadedConfig = fs.existsSync(configPath) ? JSON.parse(fs.readFileSync(configPath)) : {}
-      this.configuration = {
-        ...defaultConfig,
-        ...loadedConfig,
-      }
+      this.configuration = fs.existsSync(configPath) ? JSON.parse(fs.readFileSync(configPath)) : defaultConfig
     }
     return this.configuration
   }
 
   updateConfig(changes) {
-    fs.writeFileSync(configPath, JSON.stringify({...this.configuration, ...changes}))
+    this.configuration = {...this.configuration, ...changes}
+    fs.writeFileSync(configPath, JSON.stringify({...this.configuration, ...changes}, undefined, 2))
   }
 }
 
