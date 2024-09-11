@@ -7,9 +7,6 @@ const {
 } = Sugar
 
 const DateTimeBar = ({
-	barStyle = {},
-	dateStyle = {},
-	timeStyle = {},
 	dateFormat = "{Dow} {Mon} {d}, {yyyy}",
 	timeFormat = "{h}:{mm} {TT}",
 	refreshRate = 1000,
@@ -24,9 +21,9 @@ const DateTimeBar = ({
 	const formattedTime = now.format(timeFormat).raw
 
 	return (
-		<div style={{ display: "block", ...barStyle }}>
-			<div style={{ ...dateStyle }}>{formattedDate}</div>
-			<div style={{ ...timeStyle }}>{formattedTime}</div>
+		<div className="datetimebar">
+			<div className="date">{formattedDate}</div>
+			<div className="time">{formattedTime}</div>
 		</div>
 	)
 }

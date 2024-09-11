@@ -2,7 +2,7 @@
 const { app, BrowserWindow, protocol, ipcMain } = require("electron");
 const path = require("path");
 const url = require("url");
-const { default: initializeServices } = require("./services/services.js");
+const { default: initializeServices } = require("./services/server-side-comms.js");
 const { getConfig, updateConfig } = require("./services/configuration.js");
 
 ipcMain.on("startedup", ({ sender }, arg) => {
@@ -87,7 +87,7 @@ function setupLocalFilesNormalizerProxy() {
 app.whenReady().then(() => {
   const config = getConfig()
 
-  const mainWindowPreload = path.join(__dirname, "preload.main.js")
+  const mainWindowPreload = path.join(__dirname, "setup-comms-link.js")
 
   const window = createMainWindow({
     ...config.windows.main,

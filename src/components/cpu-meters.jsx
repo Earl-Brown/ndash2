@@ -1,5 +1,5 @@
 import PercentMeter from "./percent-meter"
-import { useCpuActivity, cpuInfoDefaults } from "../services/hardwareservice"
+import { useCpuActivity, cpuInfoDefaults } from "../services/ui-cpu-service"
 import { VerticalMeter } from "./vertical-meter"
 
 const percentageToHsl = (percentage, hue0, hue1) => {
@@ -24,25 +24,19 @@ const CpuMeterCollection = ({ secondsBetweenUpdates, style = {} }) => {
 		color = percentageToHsl(tempPercent, 113, 0)
 
 	return (
-		<div style={{ position: "relative", height: "auto", width: "100%" }}>
+		<div className="cpu-meter-collection">
 			<VerticalMeter
-				style={{
-					backgroundColor: "#cceecc",
-					width: "10px",
-					position: "absolute",
-					top: "0px",
-					bottom: "0px",
-					right: "0px"
-				}}
+				className="vertical-cpu-meter"
 				color={color}
 				percent={averageLoad}
         title={`${farenheit} (${temp}c)`}
 			/>
 
-			<div style={{ ...style }}>
+			<div className="horizontal-cpu-meter-collection">
 				{(cores ?? []).map((core, idx) => (
 					<PercentMeter
 						key={idx}
+						className="single-cpu-meter"
 						percent={core.load}
 						fillColor="#00C800"
 						meterStyle={{ borderRight: `4px solid ${color}` }}

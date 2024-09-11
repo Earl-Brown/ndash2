@@ -1,3 +1,9 @@
+body {
+  margin: 0.125rem;
+  overflow: hidden;
+  background-color: #fef8f3;
+}
+
 .App {
   font-family: sans-serif;
   text-align: center;
@@ -12,4 +18,65 @@
 .meter-box {
   border: 1px solid silver;
   padding: 0.05em;
+}
+
+.datetimebar {
+  --webkit-app-region: drag;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #e5ded8;
+  border-bottom: 1px solid #dddddd;
+}
+
+.datetimebar .time {
+  display: inline-block;
+  font-weight: bold;
+  font-size: 0.75em;
+  width: 50%;
+  text-align: right;
+  vertical-align: top
+}
+
+.datetimebar .date {
+  font-size: 1.25em;
+  font-weight: bold;
+  display: inline-block;
+  font-weight: bold;
+  font-size: 0.75em;
+  width: 50%;
+  vertical-align: top
+}
+
+.cpu-meter-collection {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  margin: 0.15rem 0;
+}
+
+.cpu-meter-collection .vertical-cpu-meter {
+  width: 8px;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  right: 0px;
+}
+
+.cpu-meter-collection .horizontal-cpu-meter-collection {
+  width: calc(100% - 10px);
+}
+
+.cpu-meter-collection .single-cpu-meter {
+  border-right: 4px solid #cceecc;
+}
+
+.memory-bar {
+  width: 100%;
+  height: 2.5rem;
+  border-top: 2px solid silver;
+  margin: 0.75em 0;
+  padding: 0.1em 0;
 }

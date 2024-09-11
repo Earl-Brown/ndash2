@@ -7,8 +7,7 @@ const cpuInfoDefaults = {
 	maxTemp: 180
 }
 
-var cpuStateReporter = undefined,
-	memoryStateReporter = undefined
+var cpuStateReporter = undefined
 
 const startReportingCpuState = (window, secondsBetweenUpdates) => {
 	const delay = secondsBetweenUpdates * 1000
@@ -34,23 +33,11 @@ const stopReportingCPUState = () => {
 	cpuStateReporter = undefined
 }
 
-const startReportingMemoryState = (window, secondsBetweenUpdates) => {
-
-}
-
-const stopReportingMemoryState = () => {
-	if (!memoryStateReporter) return
-	clearInterval(memoryStateReporter)
-	cpuStateReporter = undefined
-}
-
 const reporter = {
 	startReportingCpuState: startReportingCpuState,
 	stopReportingCPUState: stopReportingCPUState,
-	startReportingMemoryState: startReportingMemoryState,
-	stopReportingMemoryState: stopReportingMemoryState
 }
 
-export {startReportingCpuState, stopReportingCPUState, startReportingMemoryState, stopReportingMemoryState }
+export {startReportingCpuState, stopReportingCPUState }
 
 export default reporter

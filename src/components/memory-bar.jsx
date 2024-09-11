@@ -1,11 +1,12 @@
 import { useState } from "react"
-import { useMemory } from "../services/hardwareservice"
+import { useMemory } from "../services/ui-memory-service"
 import Meter from "./meter"
 
-const MemoryBar = ({ refreshRate = 1000, style = {} }) => {
-	const [{ used = 0, total = 0 }, updateRAM] = useState({})
-	useMemory(updateRAM, refreshRate)
+const MemoryBar = ({ refreshRate = 1, style = {} }) => {
+	const {used, total} = useMemory(refreshRate)
+  const abbreviatedTotal = Math.round(total / (1024 * 1024 * 1024))
 
+  console.log("memory reported", "used", used, "total", total)
 	const percentUsed = (used / total) * 100
 
 	return (
@@ -30,7 +31,7 @@ const MemoryBar = ({ refreshRate = 1000, style = {} }) => {
 					{percentUsed.toFixed()}%
 				</div>
 			</Meter>
-			<span style={{ fontSize: "0.75em" }}>of {total}GB</span>
+			<span style={{ fontSize: "0.75em" }}>of {abbreviatedTotal}GB</span>
 		</div>
 	)
 }

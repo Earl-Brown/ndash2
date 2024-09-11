@@ -1,11 +1,12 @@
 {
   "windows": {
     "main": {
-      "x": 584,
-      "y": 525,
-      "width": 139,
-      "height": 327,
+      "x": 525,
+      "y": 0,
+      "width": 133,
+      "height": 235,
       "titleBarStyle": "hidden",
+      "autoHideMenuBar": true,
       "showDebugTools": true,
       "url": "http://localhost:3000"
     }

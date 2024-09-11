@@ -1,4 +1,5 @@
-import { startReportingCpuState, stopReportingCPUState, startReportingMemoryState, stopReportingMemoryState } from "./cpu-service"
+import { startReportingCpuState, stopReportingCPUState } from "./server-side-cpu-service"
+import { startReportingMemoryState, stopReportingMemoryState } from "./server-side-memory-service"
 import { appConfiguration } from '../../package.json'
 import { ipcMain } from "electron"
 

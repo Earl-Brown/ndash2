@@ -1,0 +1,21 @@
+{
+  "windows": {
+    "main": {
+      "height": 322,
+      "width": 176,
+      "showDebugTools": false,
+      "x": 3556,
+      "y": 27,
+      "name": "default",
+      "menubarVisible": true,
+      "titleBarStyle": "hidden",
+      "titleBarOverlay": {
+        "color": "#2f3241",
+        "symbolColor": "#74b1be",
+        "height": 22
+      },
+      "backgroundThrottling": true,
+      "url": "http://localhost:3000"
+    }
+  }
+}
