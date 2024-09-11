@@ -2,26 +2,30 @@
 const { app, BrowserWindow, protocol, ipcMain } = require("electron");
 const path = require("path");
 const url = require("url");
-const fs = require("fs");
 const { default: initializeServices } = require("./services/services.js");
+const { getConfig, updateConfig } = require("./services/configuration.js");
 
-ipcMain.on("startedup", ({sender}, arg) => {
+ipcMain.on("startedup", ({ sender }, arg) => {
   console.log("started up")
 
   sender.send('hello', 'started up!')
 })
 
+const saveWindowMetrics = (window, configKey) => {
+  const metrics = window.getBounds()
+  console.log("saving metrics", metrics)
+  updateConfig({ windows: { [configKey]: metrics } })
+}
 
 // todo: create windows as an array
 //  update the config file with the window sizes
-// Precheck for CPU count
 // hide temp if not accurate (above mi)
-// no title bar
-// no menu bar
+// no title bar for main window
+// no menu bar for main window
 // allow moving by dragging the window
 // remember window position
 
-const createWindow = ({width, height, webPreferences, url, showDebugTools}) => {
+const createWindow = ({ width, height, webPreferences, url, showDebugTools }) => {
   const window = new BrowserWindow({
     width: width,
     height: height,
@@ -39,51 +43,19 @@ const createWindow = ({width, height, webPreferences, url, showDebugTools}) => {
   return window
 
 }
+
 // Create the native browser window.
-function createMainWindow() {
-
-  const defaultConfig = {height: 600, width: 800, showDebugTools: !app.isPackaged}
-
-  // read config file
-  const configPath = path.join(__dirname, "config.json")
-  const loadedConfig = fs.existsSync(configPath) ? JSON.parse(fs.readFileSync(configPath)) : {}
-
-  const config = {
-    ...defaultConfig,
-    ...loadedConfig,
-  }
-
-  const webPreferences = {
-    preload: path.join(__dirname, "preload.js"),
-    height: config.height,
-    width: config.width,
-  }
-
-  const appURL = app.isPackaged
-    ? url.format({
-        pathname: path.join(__dirname, "index.html"),
-        protocol: "file:",
-        slashes: true,
-      })
-    : "http://localhost:3000"
-
+function createMainWindow(config) {
   const window = createWindow({
-    ...config,
-    webPreferences: webPreferences,
-    url: appURL
+    ...config
   });
 
-  window.on('resize', () => {
-    const {width, height} = window.getBounds()
-    console.log("resize", width, height)
+  window.on('resize', (...args) => {
+    saveWindowMetrics(window, "main")
+  })
 
-    // save height to a config file
-    const config = {
-      height: height,
-      width: width,
-    }
-
-    fs.writeFileSync(path.join(__dirname, "config.json"), JSON.stringify(config))
+  window.on("moved", (...args) => {
+    saveWindowMetrics(window, "main")
   })
 
   return window
@@ -108,7 +80,24 @@ function setupLocalFilesNormalizerProxy() {
 // is ready to create the browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  const window = createMainWindow();
+  const config = getConfig()
+
+  const mainWindowPreload = path.join(__dirname, "preload.main.js")
+
+  const window = createMainWindow({
+    ...config.windows.main,
+    url: app.isPackaged
+      ? url.format({
+        pathname: path.join(__dirname, "index.html"),
+        protocol: "file:",
+        slashes: true,
+      })
+      : "http://localhost:3000",
+    webPreferences: {
+      preload: mainWindowPreload
+    }
+  });
+
   setupLocalFilesNormalizerProxy();
 
   console.log("initializing services")
