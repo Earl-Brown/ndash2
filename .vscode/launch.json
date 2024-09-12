@@ -1,5 +1,13 @@
 {
   "version": "0.2.0",
+  "defaultProfile": "Debug Electron: All",
+
+  "compounds": [
+    {
+      "name": "Debug Electron: All",
+      "configurations": ["Start React Server", "Debug Electron Main", "Debug Electron Renderer"]
+    }
+  ],
   "configurations": [
     {
       "name": "Start React Server",
@@ -33,12 +41,6 @@
       "port": 9222,
       "webRoot": "${workspaceFolder}",
       "timeout": 30000
-    }
-  ],
-  "compounds": [
-    {
-      "name": "Debug Electron: All",
-      "configurations": ["Start React Server", "Debug Electron Main", "Debug Electron Renderer"]
     }
   ]
 }

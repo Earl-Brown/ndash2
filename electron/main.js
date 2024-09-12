@@ -2,7 +2,7 @@
 const { app, BrowserWindow, protocol, ipcMain } = require("electron");
 const path = require("path");
 const url = require("url");
-const { default: initializeServices } = require("./services/server-side-comms.js");
+const { default: initializeServices } = require("./services/main-window-comms.js");
 const { getConfig, updateConfig } = require("./services/configuration.js");
 
 ipcMain.on("startedup", ({ sender }, arg) => {
@@ -24,47 +24,67 @@ const saveWindowConfig = (config, configKey) => {
 // allow moving by dragging the window
 // remember window position
 
-const createWindow = (configuration) => {
+const createWindow = (configuration, windowName) => {
   const {url, showDebugTools} = configuration
 
-//  titleBarStyle: "hidden",
-
-  const windowConfig = { url, ...configuration }
+  const windowConfig = { url, ...{...configuration, ...configuration.metrics, show: false} }
   console.log("creating window", windowConfig)
 
   const window = new BrowserWindow(windowConfig);
 
   window.loadURL(url);
 
-  // Automatically open Chrome's DevTools in development mode.
-  if (showDebugTools) {
-    window.webContents.openDevTools();
-  }
-  return window
-
-}
-
-// Create the native browser window.
-function createMainWindow(config) {
-  const window = createWindow({
-    ...config
-  });
+  window.once("ready-to-show", () => {
+    window.show()
+  })
+  window.on("close", () => {
+    console.log("window closed", windowName)
+    window.removeAllListeners()
+    window = null
+  })
 
   const saveMetrics = () => {
-    const configToSave = {...config}
+    const configToSave = {...configuration}
     if (configToSave.webPreferences) {
       delete configToSave.webPreferences
     }
 
-    saveWindowConfig({...configToSave, ...window.getBounds()}, "main")
+    saveWindowConfig({...configToSave, metrics: window.getBounds()}, windowName)
   }
 
   window.on('resize', saveMetrics)
 
   window.on("moved", saveMetrics)
 
+  // Automatically open Chrome's DevTools in development mode.
+  if (showDebugTools) {
+    window.webContents.openDevTools();
+  }
   return window
 }
+
+// Create the native browser window.
+function createMainWindow(config) {
+  const mainWindowConfig = config.windows.main
+  const mainWindowPreload = path.join(__dirname, mainWindowConfig.preload)
+
+  const window = createWindow({
+    ...mainWindowConfig,
+    url: app.isPackaged
+      ? url.format({
+        pathname: path.join(__dirname, mainWindowConfig.unpackedFilename),
+        protocol: "file:",
+        slashes: true,
+      })
+      : "http://localhost:3000",
+    webPreferences: {
+      preload: mainWindowPreload
+    }
+  }, "main");
+
+  return window
+}
+
 
 // Setup a local proxy to adjust the paths of requested files when loading
 // them from the local production bundle (e.g.: local fonts, etc...).
@@ -72,7 +92,7 @@ function setupLocalFilesNormalizerProxy() {
   protocol.registerHttpProtocol(
     "file",
     (request, callback) => {
-      const url = request.url.substr(8);
+      const url = request.url.slice(7);
       callback({ path: path.normalize(`${__dirname}/${url}`) });
     },
     (error) => {
@@ -86,34 +106,21 @@ function setupLocalFilesNormalizerProxy() {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   const config = getConfig()
+  if (!config.windows.main) throw new Error("main window config not found - config.json should contain a windows.main object")
 
-  const mainWindowPreload = path.join(__dirname, "setup-comms-link.js")
-
-  const window = createMainWindow({
-    ...config.windows.main,
-    url: app.isPackaged
-      ? url.format({
-        pathname: path.join(__dirname, "index.html"),
-        protocol: "file:",
-        slashes: true,
-      })
-      : "http://localhost:3000",
-    webPreferences: {
-      preload: mainWindowPreload
-    }
-  });
+  const mainWindow = createMainWindow(config)
 
   setupLocalFilesNormalizerProxy();
 
   console.log("initializing services")
 
-  initializeServices(window);
+  initializeServices(mainWindow);
 
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) {
-      createMainWindow();
+      createMainWindow(config, "main");
     }
   });
 });

@@ -1,14 +1,22 @@
 {
   "windows": {
     "main": {
-      "x": 525,
-      "y": 0,
-      "width": 133,
-      "height": 235,
+      "metrics": {
+        "x": 532,
+        "y": -2,
+        "width": 132,
+        "height": 236
+      },
       "titleBarStyle": "hidden",
-      "autoHideMenuBar": true,
+      "menuBarVisible": false,
       "showDebugTools": true,
-      "url": "http://localhost:3000"
+      "focusable": false,
+      "frame": false,
+      "draggable": true,
+      "autoHideMenuBar": true,
+      "url": "http://localhost:3000",
+      "preload": "main-window-preload.js",
+      "unpackedFilename": "index.html"
     }
   }
 }

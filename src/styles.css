@@ -20,8 +20,13 @@ body {
   padding: 0.05em;
 }
 
+.datetimebar, .datetimebar * {
+  -webkit-app-region: drag;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
 .datetimebar {
-  --webkit-app-region: drag;
   width: 100%;
   display: flex;
   flex-direction: row;
